@@ -1,0 +1,21 @@
+# Core LLM + Agents
+langchain
+langchain-openai
+langchain-community
+langgraph
+
+# Tavily search client
+langchain-tavily
+
+# API framework
+fastapi
+uvicorn[standard]
+mangum
+
+# Utilities
+pydantic
+pydantic-settings
+python-dotenv
+
+# Testing
+pytest
