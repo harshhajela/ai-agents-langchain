@@ -1,0 +1,5 @@
+-r requirements.txt   # include everything from base
+pre-commit
+black
+flake8
+pytest

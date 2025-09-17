@@ -16,6 +16,3 @@ mangum
 pydantic
 pydantic-settings
 python-dotenv
-
-# Testing
-pytest

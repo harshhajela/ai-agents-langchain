@@ -1,12 +1,15 @@
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List
+
 
 class ResearchPayload(BaseModel):
     query: str
 
+
 class Source(BaseModel):
     title: str
     url: str
+
 
 class ResearchResponse(BaseModel):
     query: str

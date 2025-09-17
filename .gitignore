@@ -16,3 +16,14 @@ venv/
 
 # OS
 .DS_Store
+.pre-commit-config.yaml
+
+*.log
+dist/
+build/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
