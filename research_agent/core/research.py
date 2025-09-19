@@ -11,7 +11,17 @@ from research_agent.app.deps import settings, logger
 def run_research(query: str) -> Dict[str, Any]:
     # Initialize TavilySearch tool with API key
     try:
-        tavily_tool = TavilySearch(api_key=settings.tavily_api_key)
+        # Pass the correct parameter name expected by langchain_tavily
+        # if missing, let it read from env
+        tavily_key = (
+            settings.tavily_api_key.get_secret_value()
+            if settings.tavily_api_key
+            else None
+        )
+        if tavily_key:
+            tavily_tool = TavilySearch(tavily_api_key=tavily_key)
+        else:
+            tavily_tool = TavilySearch()
     except Exception as e:
         logger.error(f"Failed to initialize Tavily Search: {e}")
         return {
@@ -22,12 +32,37 @@ def run_research(query: str) -> Dict[str, Any]:
 
     # Initialize ChatOpenAI language model with specified params from settings
     try:
-        llm = ChatOpenAI(
-            model=settings.model_name,
-            api_key=settings.openrouter_api_key,
-            base_url="https://openrouter.ai/api/v1",
-            temperature=settings.temperature,
+        openrouter_key = (
+            settings.openrouter_api_key.get_secret_value()
+            if settings.openrouter_api_key
+            else None
         )
+        openai_key = (
+            settings.openai_api_key.get_secret_value()
+            if settings.openai_api_key
+            else None
+        )
+
+        if openrouter_key:
+            llm = ChatOpenAI(
+                model=settings.model_name,
+                api_key=openrouter_key,
+                base_url="https://openrouter.ai/api/v1",
+                temperature=settings.temperature,
+            )
+        elif openai_key:
+            llm = ChatOpenAI(
+                model=settings.model_name,
+                api_key=openai_key,
+                temperature=settings.temperature,
+            )
+        else:
+            # Let ChatOpenAI pick up API key from the environment if present
+            # and allows tests to patch the class without needing keys.
+            llm = ChatOpenAI(
+                model=settings.model_name,
+                temperature=settings.temperature,
+            )
     except Exception as e:
         logger.error(f"Failed to initialize ChatOpenAI: {e}")
         return {
@@ -124,13 +159,15 @@ Format strictly as:
         else final_content.strip()
     )
 
-    # Return a plain dictionary containing the results
-    return {
+    result = {
         "query": query,
         "raw_messages": [response],
         "final_summary": summary_md,
         "sources": sources,
     }
+
+    # Return a plain dictionary containing the results
+    return result
 
 
 if __name__ == "__main__":

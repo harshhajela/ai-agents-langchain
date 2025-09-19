@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 from typing import List
 
@@ -15,3 +16,14 @@ class ResearchResponse(BaseModel):
     query: str
     final_summary: str
     sources: List[Source]
+
+
+class ResearchRecord(BaseModel):
+    query: str
+    final_summary: str
+    sources: List[Source]
+    created_at: datetime
+
+
+class ResearchHistoryResponse(BaseModel):
+    items: List[ResearchRecord]

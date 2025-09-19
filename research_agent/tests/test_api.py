@@ -8,7 +8,9 @@ client = TestClient(app)
 def test_health_check():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    data = response.json()
+    assert data["status"] == "ok"
+    assert isinstance(data.get("version"), str)
 
 
 def test_research_endpoint_success(monkeypatch):

@@ -1,18 +1,21 @@
-# Core LLM + Agents
-langchain
-langchain-openai
-langchain-community
-langgraph
+# Core LLM + Agents (pinned)
+langchain==0.2.16
+langchain-openai==0.2.2
+langchain-community==0.2.12
+langgraph==0.2.30
 
 # Tavily search client
-langchain-tavily
+langchain-tavily==0.1.4
 
 # API framework
-fastapi
-uvicorn[standard]
-mangum
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+mangum==0.17.0
 
 # Utilities
-pydantic
-pydantic-settings
-python-dotenv
+pydantic==2.8.2
+pydantic-settings==2.4.0
+python-dotenv==1.0.1
+
+# Google Sheets integration
+gspread==6.1.2
