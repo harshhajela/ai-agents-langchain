@@ -88,6 +88,7 @@ The API will be accessible at `http://localhost:8000`.
 Google Sheets persistence:
 - Provide `GOOGLE_SERVICE_ACCOUNT_JSON` (full JSON as one string), `GSPREAD_SHEET_ID`, and optional `GSPREAD_WORKSHEET` (defaults to `history`).
 - POST `/agents/research` appends a row for successful runs; GET `/agents/research/history?limit=20` reads recent entries.
+ - Control persistence with `PERSIST_RESULTS` (default `false`). Set to `true` in production to enable writes.
 
 ## Logging
 - Writes logs to stdout and to a rotated file at `/var/log/ai-agents/app.log` (created in the container).

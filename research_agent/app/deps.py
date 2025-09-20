@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     log_rotation_when: str = "midnight"
     log_rotation_backup_count: int = 7
 
+    # Persistence toggle
+    persist_results: bool = True
+
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )

@@ -6,7 +6,7 @@ from research_agent.app.schemas import (
     ResearchRecord,
 )
 from research_agent.core.research import run_research
-from research_agent.app.deps import logger
+from research_agent.app.deps import logger, settings
 from research_agent.services import sheets
 
 
@@ -17,8 +17,8 @@ router = APIRouter(prefix="/agents", tags=["agents"])
 def research_endpoint(payload: ResearchPayload, background_tasks: BackgroundTasks):
     try:
         result = run_research(payload.query)
-        # Persist asynchronously after returning response
-        if not result["final_summary"].startswith("Error"):
+        # Persist asynchronously after returning response if enabled
+        if settings.persist_results and not result["final_summary"].startswith("Error"):
             background_tasks.add_task(sheets.append_research_result, result)
         return ResearchResponse(
             query=result["query"],

@@ -14,6 +14,7 @@ echo "Writing env file to ${DEST_FILE}"
   [ -n "${GOOGLE_SERVICE_ACCOUNT_JSON:-}" ] && echo "GOOGLE_SERVICE_ACCOUNT_JSON=${GOOGLE_SERVICE_ACCOUNT_JSON}"
   [ -n "${GSPREAD_SHEET_ID:-}" ] && echo "GSPREAD_SHEET_ID=${GSPREAD_SHEET_ID}"
   [ -n "${GSPREAD_WORKSHEET:-}" ] && echo "GSPREAD_WORKSHEET=${GSPREAD_WORKSHEET}" || echo "GSPREAD_WORKSHEET=history"
+  [ -n "${PERSIST_RESULTS:-}" ] && echo "PERSIST_RESULTS=${PERSIST_RESULTS}" || echo "PERSIST_RESULTS=false"
 } >"${DEST_FILE}"
 
 echo "Wrote $(wc -l <"${DEST_FILE}") lines to ${DEST_FILE}"
