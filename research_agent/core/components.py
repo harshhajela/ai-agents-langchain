@@ -54,6 +54,12 @@ class SearchTool:
 
 class Summarizer:
     def __init__(self) -> None:
+        # Lazy init so tests can patch summarize without needing real keys
+        self._llm: ChatOpenAI | None = None
+
+    def _ensure_llm(self) -> None:
+        if self._llm is not None:
+            return
         openrouter_key = (
             settings.openrouter_api_key.get_secret_value()
             if settings.openrouter_api_key
@@ -78,6 +84,7 @@ class Summarizer:
                 temperature=settings.temperature,
             )
         else:
+            # Attempt to initialize without explicit key; env-based or mocked usage
             self._llm = ChatOpenAI(
                 model=settings.model_name, temperature=settings.temperature
             )
@@ -121,6 +128,8 @@ Format strictly as:
         # Accept raw prompt text to make unit testing easier
         from langchain_core.messages import HumanMessage
 
+        self._ensure_llm()
+        # type: ignore[union-attr]
         response = self._llm.invoke([HumanMessage(content=prompt_text)])
         return response.content
 
