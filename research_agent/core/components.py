@@ -18,7 +18,12 @@ class SearchResult:
 
 class SearchTool:
     def __init__(self) -> None:
-        # Configure Tavily
+        # Lazy init to make unit testing easier without real keys
+        self._tool: TavilySearch | None = None
+
+    def _ensure_tool(self) -> None:
+        if self._tool is not None:
+            return
         tavily_key = (
             settings.tavily_api_key.get_secret_value()
             if settings.tavily_api_key
@@ -32,8 +37,9 @@ class SearchTool:
     def search(
         self, query: str, limit: int = 5
     ) -> Tuple[List[SearchResult], Dict[str, Any]]:
+        self._ensure_tool()
         payload = {"query": query}
-        raw = self._tool.invoke(payload)
+        raw = self._tool.invoke(payload)  # type: ignore[union-attr]
         results = raw.get("results", [])[:limit]
         parsed = [
             SearchResult(
