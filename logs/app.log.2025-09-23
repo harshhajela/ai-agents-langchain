@@ -1,7 +1,0 @@
-2025-09-23 13:37:11 INFO ai-agents Logging initialized at level INFO -> /Users/harshhajela/Documents/workspace/ai-agents/logs/app.log
-2025-09-23 13:37:22 INFO ai-agents request_id=16b26e55-dc36-4c0a-aee5-261ed3539291 method=OPTIONS path=/agents/research/history status=200 time_ms=1
-2025-09-23 13:37:24 INFO ai-agents request_id=56730c05-53e5-4ab9-b70e-c4358e5d58bc method=GET path=/agents/research/history status=200 time_ms=2363
-2025-09-23 13:37:53 INFO ai-agents request_id=005c54a2-b03d-44ac-b7ff-dc962f41f1ae method=OPTIONS path=/agents/research status=200 time_ms=1
-2025-09-23 13:38:06 INFO ai-agents request_id=f068f94f-e56e-4b20-ba10-d1ce5e2cc393 method=POST path=/agents/research status=200 time_ms=12748
-2025-09-23 13:38:16 INFO ai-agents request_id=d703d8e9-5713-4e34-bbf1-87c1ed471e60 method=GET path=/agents/research/history status=200 time_ms=1992
-2025-09-23 13:45:57 INFO ai-agents request_id=dde77f94-1deb-4e41-b674-1e0ccd97e0b8 method=GET path=/agents/research/history status=200 time_ms=2239
