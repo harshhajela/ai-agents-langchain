@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     tavily_api_key: SecretStr | None = None
     openrouter_api_key: SecretStr | None = None
-    model_name: str = "gpt-4o-mini"
+    model_name: str = "x-ai/grok-4-fast:free"
     temperature: float = 0.2
     openai_api_key: SecretStr | None = None  # allow OpenAI key if present
 

@@ -68,13 +68,13 @@ jobs:
 
     - name: Build Docker image
       run: |
-        IMAGE_BASE=ghcr.io/${{ github.repository_owner }}/research-agent
+        IMAGE_BASE=ghcr.io/harshhajela/research-agent
         VERSION=${{ steps.get_version.outputs.version }}
         docker build -t ${IMAGE_BASE}:${VERSION} -t ${IMAGE_BASE}:latest .
 
     - name: Push Docker images
       run: |
-        IMAGE_BASE=ghcr.io/${{ github.repository_owner }}/research-agent
+        IMAGE_BASE=ghcr.io/harshhajela/research-agent
         VERSION=${{ steps.get_version.outputs.version }}
         docker push ${IMAGE_BASE}:${VERSION}
         docker push ${IMAGE_BASE}:latest
