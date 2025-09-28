@@ -1,5 +1,12 @@
 name: CI
 
+permissions:
+  contents: read
+  packages: write
+
+env:
+  CR_PAT: ${{ secrets.CR_PAT }}
+
 on:
   push:
     branches: [ "main" ]
@@ -60,11 +67,7 @@ jobs:
         echo "version=$(python -c 'import research_agent; print(research_agent.__version__)')" >> $GITHUB_OUTPUT
 
     - name: Log in to GHCR
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      run: echo $CR_PAT | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
     - name: Build Docker image
       run: |

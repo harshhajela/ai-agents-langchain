@@ -1,0 +1,27 @@
+2025-09-18 19:50:07 INFO ai-agents Logging initialized at level INFO -> /Users/harshhajela/Documents/workspace/ai-agents/logs/app.log
+2025-09-18 19:50:17 INFO ai-agents Logging initialized at level INFO -> /Users/harshhajela/Documents/workspace/ai-agents/logs/app.log
+2025-09-18 19:59:11 INFO ai-agents Logging initialized at level INFO -> /Users/harshhajela/Documents/workspace/ai-agents/logs/app.log
+2025-09-18 20:11:49 INFO ai-agents request_id=75fab6e7-ab21-42a0-90a4-0af7fe951e8f method=OPTIONS path=/agents/research/history status=200 time_ms=1
+2025-09-18 20:11:52 INFO ai-agents request_id=a14c7033-c49a-44cc-9ada-460b51be3e00 method=GET path=/agents/research/history status=200 time_ms=3539
+2025-09-18 20:12:57 INFO ai-agents request_id=fee328a9-74fe-47a7-9033-168e15f03b50 method=OPTIONS path=/agents/research status=200 time_ms=0
+2025-09-18 20:13:18 INFO ai-agents request_id=ca1e23ce-c18a-48fa-a8b1-6fb7e9f941c3 method=POST path=/agents/research status=200 time_ms=21462
+2025-09-18 20:13:20 INFO ai-agents request_id=0a55b0db-898a-40e5-b152-41bedd7eac22 method=GET path=/agents/research/history status=200 time_ms=1594
+2025-09-18 20:27:03 INFO ai-agents request_id=faa40eba-f3ab-4140-914b-b2f33ae8ef43 method=OPTIONS path=/agents/research/history status=200 time_ms=20
+2025-09-18 20:27:07 INFO ai-agents request_id=d3a11fad-0706-4c80-8a30-2d3c28a64926 method=GET path=/agents/research/history status=200 time_ms=3422
+2025-09-18 20:27:14 INFO ai-agents request_id=b8aed3da-617b-4ad9-972f-72dbf5422576 method=GET path=/agents/research/history status=200 time_ms=2043
+2025-09-18 20:27:22 INFO ai-agents request_id=78f38e42-4337-4c28-8cc3-e385a40634a3 method=GET path=/agents/research/history status=200 time_ms=2057
+2025-09-18 20:30:57 INFO ai-agents request_id=544645da-5b52-4608-b90d-20dd6775472d method=OPTIONS path=/agents/research status=200 time_ms=0
+2025-09-18 20:31:14 INFO ai-agents request_id=36ee903c-6476-4175-a51d-b19bde4a29ed method=POST path=/agents/research status=200 time_ms=16610
+2025-09-18 20:31:15 INFO ai-agents request_id=b747786f-4c7a-4619-9eae-b53c28b1b900 method=GET path=/agents/research/history status=200 time_ms=1560
+2025-09-18 20:37:05 INFO ai-agents request_id=ddd5b4e3-c23d-46aa-af99-b713959a46aa method=OPTIONS path=/agents/research/history status=200 time_ms=1
+2025-09-18 20:37:08 INFO ai-agents request_id=4963889f-70a8-4390-86d8-981afd537866 method=GET path=/agents/research/history status=200 time_ms=2343
+2025-09-18 20:40:07 INFO ai-agents request_id=63a76652-b621-4fe7-a86e-b9d296ba7779 method=GET path=/agents/research/history status=200 time_ms=1402
+2025-09-18 20:47:39 INFO ai-agents Logging initialized at level INFO -> /Users/harshhajela/Documents/workspace/ai-agents/logs/app.log
+2025-09-18 20:47:46 INFO ai-agents Logging initialized at level INFO -> /Users/harshhajela/Documents/workspace/ai-agents/logs/app.log
+2025-09-18 21:02:30 INFO ai-agents request_id=c126d7fc-9bc6-4003-a4c3-5b492a129736 method=OPTIONS path=/agents/research/history status=200 time_ms=16
+2025-09-18 21:02:32 INFO ai-agents request_id=93396e1e-66b4-4515-8562-55b6374c230d method=GET path=/agents/research/history status=200 time_ms=2322
+2025-09-18 22:02:03 INFO ai-agents request_id=99b82cb4-3637-4cb4-a80f-894656f6b47b method=OPTIONS path=/agents/research/history status=200 time_ms=4
+2025-09-18 22:02:05 INFO ai-agents request_id=3d9f5edf-04f3-4f27-8bb2-c2b4d8cf84ba method=GET path=/agents/research/history status=200 time_ms=2606
+2025-09-18 22:02:44 INFO ai-agents request_id=9feace01-60ec-4ceb-bfa1-a3fa7f687752 method=OPTIONS path=/agents/research/history status=200 time_ms=1
+2025-09-18 22:02:47 INFO ai-agents request_id=62014a3d-c02a-4f47-9cdf-3026c07be2a9 method=GET path=/agents/research/history status=200 time_ms=2538
+2025-09-18 22:02:59 INFO ai-agents request_id=cbebebe7-0344-4855-9a0f-9e019d351627 method=GET path=/agents/research/history status=200 time_ms=2452
