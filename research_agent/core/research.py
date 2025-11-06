@@ -1,9 +1,11 @@
-from typing import Dict, Any
-from research_agent.app.deps import logger
+from typing import Dict, Any, Optional
+from research_agent.app.deps import logger, fallback_models
 from research_agent.core.components import SearchTool, Summarizer, ResponseParser
 
 
-def run_research(query: str) -> Dict[str, Any]:
+def run_research(
+    query: str, *, model_name: Optional[str] = None, temperature: Optional[float] = None
+) -> Dict[str, Any]:
     # Initialize components
     try:
         search = SearchTool()
@@ -16,7 +18,7 @@ def run_research(query: str) -> Dict[str, Any]:
         }
 
     try:
-        summarizer = Summarizer()
+        summarizer = Summarizer(model_name=model_name, temperature=temperature)
     except Exception as e:
         logger.error(f"Failed to initialize summarizer: {e}")
         return {
@@ -36,17 +38,32 @@ def run_research(query: str) -> Dict[str, Any]:
             "sources": [],
         }
 
-    # Summarize
+    # Summarize (with fallback if initial attempt fails)
+    prompt_text = summarizer.build_prompt(query, top_results)
     try:
-        prompt_text = summarizer.build_prompt(query, top_results)
         content = summarizer.summarize(prompt_text)
     except Exception as e:
         logger.error(f"Error during summarization: {e}")
-        return {
-            "query": query,
-            "final_summary": "Error: Language model invocation failed.",
-            "sources": [],
-        }
+        # Try fallbacks
+        tried: list[str] = []
+        primary_model = getattr(summarizer, "_model_name", None)
+        for alt_model in fallback_models(exclude_provider_id=primary_model):
+            tried.append(alt_model)
+            logger.info(f"Attempting fallback model: {alt_model}")
+            try:
+                alt = Summarizer(model_name=alt_model, temperature=temperature)
+                content = alt.summarize(prompt_text)
+                summarizer = alt  # switch to the working summarizer for downstream
+                break
+            except Exception as ex:
+                logger.error(f"Fallback model failed: {alt_model} error={ex}")
+                content = None  # ensure not using stale content
+        if not content:
+            return {
+                "query": query,
+                "final_summary": "Error: Language model invocation failed.",
+                "sources": [],
+            }
 
     # Parse
     parsed = ResponseParser.parse_content(content)

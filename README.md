@@ -79,6 +79,31 @@ The API will be accessible at `http://localhost:8000`.
   - `MONGODB_URI` (for storing research history)
   - AWS credentials used for deployment (if you build/push from CI)
 
+### Model Configuration
+- `MODEL_NAME`: default `x-ai/grok-4-fast`. Used when a request does not provide overrides.
+- `TEMPERATURE`: default `0.2`.
+- Per‑request overrides via `POST /agents/research` payload:
+  - `model_name`: one of `"grok" | "llama" | "deepseek" | "google"` (models mapped for OpenRouter):
+    - `grok` → `x-ai/grok-4-fast`
+    - `llama` → `meta-llama/llama-3.1-8b-instruct:free`
+    - `deepseek` → `deepseek/deepseek-chat:free`
+    - `google` → `google/gemma-2-9b-it:free`
+  - `temperature`: float `0.0`–`2.0`.
+
+Example request with overrides:
+```bash
+curl -X POST http://localhost:8000/agents/research \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "query": "State of RAG in 2025",
+        "model_name": "llama",
+        "temperature": 0.7
+      }'
+```
+Notes:
+- If `model_name` is not one of the allowed values, the API responds with `422 Unprocessable Entity`.
+- Only the three free models listed above are permitted by design; tests enforce this restriction.
+
 ## CI/CD and Docker (Backend)
 - Backend runs as a Docker container on EC2 behind an ALB.
 - Provide env vars via your CI/CD secret store and write a runtime `.env` file using `scripts/write-env-file.sh`.

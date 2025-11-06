@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 from research_agent.app.main import app
+from research_agent.app.deps import ALLOWED_FREE_MODELS
 
 
 client = TestClient(app)
@@ -14,7 +15,7 @@ def test_health_check():
 
 
 def test_research_endpoint_success(monkeypatch):
-    def mock_run_research(query: str):
+    def mock_run_research(query: str, *, model_name=None, temperature=None):
         return {
             "query": query,
             "final_summary": "Mocked summary",
@@ -45,7 +46,7 @@ def test_research_endpoint_success(monkeypatch):
 
 
 def test_research_endpoint_failure(monkeypatch):
-    def mock_run_research(query: str):
+    def mock_run_research(query: str, *, model_name=None, temperature=None):
         raise Exception("LLM error")
 
     from research_agent.app import routes
@@ -55,3 +56,37 @@ def test_research_endpoint_failure(monkeypatch):
     response = client.post("/agents/research", json={"query": "AI in finance"})
     assert response.status_code == 500
     assert "Internal Server Error" in response.json()["detail"]
+
+
+def test_research_endpoint_model_restrictions(monkeypatch):
+    # Capture what model was resolved to
+    captured = {"model": None, "temp": None}
+
+    def mock_run_research(query: str, *, model_name=None, temperature=None):
+        captured["model"] = model_name
+        captured["temp"] = temperature
+        return {
+            "query": query,
+            "final_summary": "Mocked",
+            "sources": [],
+        }
+
+    from research_agent.app import routes
+
+    monkeypatch.setattr(routes, "run_research", mock_run_research)
+
+    # Allowed models should pass and resolve to provider IDs
+    for name in ["grok", "llama", "deepseek", "google"]:
+        response = client.post(
+            "/agents/research",
+            json={"query": "q", "model_name": name, "temperature": 0.7},
+        )
+        assert response.status_code == 200
+        assert captured["model"] == ALLOWED_FREE_MODELS[name]
+        assert captured["temp"] == 0.7
+
+    # Disallowed model should 422 (schema validation)
+    response = client.post(
+        "/agents/research", json={"query": "q", "model_name": "gpt-4o"}
+    )
+    assert response.status_code == 422

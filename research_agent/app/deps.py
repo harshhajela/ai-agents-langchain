@@ -7,7 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     tavily_api_key: SecretStr | None = None
     openrouter_api_key: SecretStr | None = None
-    model_name: str = "x-ai/grok-4-fast:free"
+    # Default to OpenRouter Grok Fast base model
+    model_name: str = "x-ai/grok-4-fast"
     temperature: float = 0.2
     openai_api_key: SecretStr | None = None  # allow OpenAI key if present
 
@@ -31,6 +32,47 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# Allowed free models map: request values -> provider model identifiers
+ALLOWED_FREE_MODELS: dict[str, str] = {
+    "grok": "x-ai/grok-4-fast",
+    "llama": "meta-llama/llama-3.1-8b-instruct:free",
+    "deepseek": "deepseek/deepseek-chat:free",
+    "google": "google/gemma-2-9b-it:free",
+}
+
+
+def resolve_model_name(request_model: str | None) -> str:
+    """Resolve a request `model_name` to an allowed provider model string.
+
+    - If `request_model` is None, fall back to env-configured `settings.model_name`.
+    - If provided, it must be one of ALLOWED_FREE_MODELS keys.
+    """
+    if request_model is None:
+        return settings.model_name
+    key = request_model.lower()
+    if key not in ALLOWED_FREE_MODELS:
+        raise ValueError(
+            "Model not allowed. Choose one of: grok, llama, deepseek, google"
+        )
+    return ALLOWED_FREE_MODELS[key]
+
+
+# Order to try when the selected model fails at runtime (e.g. 404 on provider)
+FALLBACK_ORDER: list[str] = ["llama", "deepseek", "google", "grok"]
+
+
+def fallback_models(exclude_provider_id: str | None) -> list[str]:
+    """Return a list of provider model IDs to try as fallbacks.
+
+    Excludes the provided `exclude_provider_id` if present.
+    """
+    ordered = [
+        ALLOWED_FREE_MODELS[k] for k in FALLBACK_ORDER if k in ALLOWED_FREE_MODELS
+    ]
+    if exclude_provider_id is None:
+        return ordered
+    return [m for m in ordered if m != exclude_provider_id]
 
 
 def configure_logging() -> logging.Logger:

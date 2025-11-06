@@ -3,6 +3,7 @@ version: "3.8"
 services:
   n8n:
     image: n8nio/n8n:latest
+    container_name: ai-n8n
     restart: unless-stopped
     ports:
       - "5678:5678"
@@ -16,5 +17,74 @@ services:
       - N8N_HOST=localhost
       - N8N_PORT=5678
 
+  # Postgres with pgvector extension (for RAG)
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: ai-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=ai_agents
+      - POSTGRES_USER=ai_user
+      - POSTGRES_PASSWORD=ai_pass
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_user -d ai_agents"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    # Note: run `CREATE EXTENSION IF NOT EXISTS vector;` inside the `ai_agents` DB once.
+
+  # Optional DB UI for local dev
+  adminer:
+    image: adminer:latest
+    container_name: ai-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    profiles:
+      - dev
+
+  # Optional tracing/observability for prompts & costs
+  langfuse:
+    image: langfuse/langfuse:latest
+    container_name: ai-langfuse
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://ai_user:ai_pass@postgres:5432/ai_agents
+      - NEXTAUTH_SECRET=change_me_for_production
+      - NEXTAUTH_URL=http://localhost:3100
+      - TELEMETRY_ENABLED=false
+    ports:
+      - "3100:3000"
+    depends_on:
+      - postgres
+    profiles:
+      - observability
+
+  # Optional PII services (use via HTTP from n8n)
+  presidio-analyzer:
+    image: mcr.microsoft.com/presidio-analyzer:latest
+    container_name: ai-presidio-analyzer
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    profiles:
+      - pii
+
+  presidio-anonymizer:
+    image: mcr.microsoft.com/presidio-anonymizer:latest
+    container_name: ai-presidio-anonymizer
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    profiles:
+      - pii
+
 volumes:
   n8n_data:
+  pg_data:

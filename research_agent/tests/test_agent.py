@@ -1,5 +1,6 @@
 from unittest.mock import patch
 from research_agent.core.research import run_research
+from research_agent.app.deps import ALLOWED_FREE_MODELS
 
 
 @patch("research_agent.core.components.Summarizer.summarize")
@@ -46,3 +47,42 @@ def test_response_parser():
     parsed = ResponseParser.parse_content(content)
     assert parsed["summary_md"].startswith("Hello")
     assert len(parsed["sources"]) == 2
+
+
+@patch("research_agent.core.components.SearchTool.search")
+def test_run_research_with_fallback(mock_search):
+    # Minimal search result to build a prompt
+    mock_search.return_value = (
+        [
+            type(
+                "R",
+                (),
+                {
+                    "title": "Example",
+                    "url": "http://example.com",
+                    "snippet": "Some content",
+                },
+            )
+        ],
+        {},
+    )
+
+    # Choose an initial provider that should fail first
+    initial_provider = ALLOWED_FREE_MODELS["grok"]
+
+    calls = {"seen": []}
+
+    def summarize_side_effect(self, prompt_text: str):
+        # Fail for the initial provider id to trigger fallback, succeed otherwise
+        calls["seen"].append(getattr(self, "_model_name", "unknown"))
+        if getattr(self, "_model_name", None) == initial_provider:
+            raise RuntimeError("Simulated provider 404")
+        return "# Summary\nWorked\n\n# Sources\n- [X](http://x.com)"
+
+    with patch(
+        "research_agent.core.components.Summarizer.summarize", new=summarize_side_effect
+    ):
+        result = run_research("test", model_name=initial_provider, temperature=0.5)
+        assert result["final_summary"].startswith("Worked")
+        # Ensure we attempted at least two models (initial + a fallback)
+        assert len(calls["seen"]) >= 2
